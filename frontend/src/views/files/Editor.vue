@@ -45,7 +45,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapState(["req", "user"]),
+    ...mapState(["req", "user","oldReq"]),
     breadcrumbs() {
       let parts = this.$route.path.split("/");
 
@@ -85,7 +85,7 @@ export default {
   },
   mounted: function () {
     const fileContent = this.req.content || "";
-
+    this.listing = this.oldReq.items;
     ace.config.set(
       "basePath",
       `https://cdn.jsdelivr.net/npm/ace-builds@${ace_version}/src-min-noconflict/`
@@ -134,10 +134,14 @@ export default {
       }
     },
     close() {
-      this.$store.commit("updateRequest", {});
-
       let uri = url.removeLastDir(this.$route.path) + "/";
-      this.$router.push({ path: uri });
+      const hasCachedListing = !!this.oldReq.items;
+      this.$store.commit("updateRequest", this.oldReq);
+      if (hasCachedListing) {
+        this.$router.push({ path: uri, query: { cache: true } });
+      } else {
+        this.$router.push({ path: uri });
+      }
     },
   },
 };

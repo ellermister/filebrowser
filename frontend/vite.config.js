@@ -1,17 +1,17 @@
 import { fileURLToPath, URL } from "node:url";
 import path from "node:path";
 import { defineConfig } from "vite";
-import legacy from "@vitejs/plugin-legacy";
+// import legacy from "@vitejs/plugin-legacy";
 import vue2 from "@vitejs/plugin-vue2";
 import { compression } from "vite-plugin-compression2";
 import pluginRewriteAll from "vite-plugin-rewrite-all";
 
 const plugins = [
   vue2(),
-  legacy({
-    targets: ["ie >= 11"],
-    additionalLegacyPolyfills: ["regenerator-runtime/runtime"],
-  }),
+  // legacy({
+    // targets: ["ie >= 11"],
+    // additionalLegacyPolyfills: ["regenerator-runtime/runtime"],
+  // }),
   compression({ include: /\.js$/i, deleteOriginalAssets: true }),
   pluginRewriteAll(), // fixes 404 error with paths containing dot in dev server
 ];
@@ -46,6 +46,7 @@ export default defineConfig(({ command }) => {
       resolve,
       base: "",
       build: {
+		  chunkSizeWarningLimit: 1600,
         rollupOptions: {
           input: {
             index: fileURLToPath(
